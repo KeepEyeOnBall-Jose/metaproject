@@ -396,10 +396,44 @@ def main():
     """Run all tests."""
     print("🚀 Running comprehensive question interface tests...\n")
 
+    def test_answers_display():
+        """Test that answers are loaded and displayed correctly."""
+        print("📝 Testing answer display...")
+
+        test_file = os.path.join(
+            os.path.dirname(__file__),
+            "question-interface",
+            "frontend",
+            "tests",
+            "answers-display.spec.js",
+        )
+
+        if not os.path.exists(test_file):
+            print("❌ Answer display test file not found")
+            return False
+
+        result = subprocess.run(
+            ["npx", "playwright", "test", "answers-display.spec.js", "--reporter=json"],
+            cwd=os.path.join(
+                os.path.dirname(__file__), "question-interface", "frontend"
+            ),
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        if result.returncode == 0:
+            print("✅ Answers displaying correctly")
+            return True
+        else:
+            print("❌ Answer display test failed")
+            return False
+
     tests = [
         ("Backend API", test_backend_api),
         ("CORS Configuration", test_cors_headers),
         ("Console Warnings", test_console_warnings),
+        ("Answers Display", test_answers_display),
         ("Full Integration", test_full_integration),
     ]
 

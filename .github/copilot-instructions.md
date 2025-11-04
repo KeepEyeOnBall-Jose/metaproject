@@ -169,76 +169,6 @@ This script validates that SSL certificates are properly configured and can be l
 
 ## Script Execution Guidelines
 
-### ABSOLUTE RULE: NEVER Use Direct Terminal Commands for Complex Operations
-
-**🚫 STRICTLY FORBIDDEN: Never execute commands with pipes (|), redirection (>, >>), complex shell operations, or multi-step processes directly in the terminal.**
-
-**REASONING:** Direct terminal commands with pipes/redirection are:**
-- Not reproducible or version controllable
-- Difficult to debug and maintain
-- Platform-dependent and error-prone
-- Leave no audit trail of what was executed
-
-**EXAMPLES OF COMPLETELY FORBIDDEN COMMANDS:**
-```bash
-# ❌ ABSOLUTELY NEVER DO THESE:
-curl http://localhost:8000 | head -20
-npm run dev > /dev/null 2>&1 &
-command1 && command2 || command3
-ps aux | grep python | grep -v grep
-cat file.txt | grep "pattern" | wc -l
-```
-
-**✅ ONLY DO THIS INSTEAD:**
-```bash
-# ✅ Create a script file and execute it
-python my_test_script.py
-```
-
-### When to Create Scripts (MANDATORY)
-
-**You MUST create a script file for ANY operation that involves:**
-- Multiple commands or steps
-- Pipes, redirection, or shell operators
-- Process management (starting/stopping servers)
-- Error handling and cleanup
-- Data processing or filtering
-- Network requests with output processing
-- Any non-trivial operation
-
-### Script Requirements (MANDATORY)
-
-**ALL scripts MUST include:**
-1. **Descriptive filename**: `test_api_endpoints.py`, `start_services.py`
-2. **Shebang line**: `#!/usr/bin/env python3`
-3. **Comprehensive docstring**: Explain purpose, usage, and behavior
-4. **Error handling**: Try/except blocks with proper cleanup
-5. **Resource cleanup**: Always terminate processes, close connections
-6. **Return codes**: `sys.exit(0)` for success, `sys.exit(1)` for failure
-7. **Absolute paths**: Use absolute paths to avoid directory issues
-
-### Terminal Command Restrictions (MANDATORY)
-
-**The ONLY terminal commands allowed are:**
-- `cd` - Change directory
-- `ls` - List files
-- `python script.py` - Execute a Python script
-- `npm test` - Run npm scripts (single command only)
-- `pip install -r requirements.txt` - Install dependencies
-- Simple commands without pipes/redirection
-
-**ANYTHING ELSE must be written as a script first.**
-
-### Consequences of Violation
-
-If you execute forbidden terminal commands:
-- The operation will fail or behave unpredictably
-- Debugging becomes extremely difficult
-- The codebase becomes less maintainable
-- Future developers will struggle to understand what was done
-
-**ALWAYS create a script instead. This is not optional - it is mandatory.**
-
 ## API Endpoints
 
 - `GET /questions` - Get all questions
@@ -272,4 +202,122 @@ docker-compose up
 ### Testing Issues
 - Run tests from correct directory
 - Ensure all dependencies are installed
-- Check that ports 8000/5173 are available
+- Check that ports 8000/5173/8443 are available
+
+## Project Structure
+
+```
+question-interface/
+├── backend/              # FastAPI server
+│   ├── main.py          # API endpoints
+│   ├── requirements.txt # Python dependencies
+│   └── tests/           # Backend unit tests
+├── frontend/            # React application
+│   ├── src/
+│   │   ├── App.jsx      # Main application component
+│   │   ├── ConceptCloud.jsx  # 3D visualization
+│   │   └── QuestionList.jsx  # Question display
+│   └── package.json     # Node dependencies
+├── test_integration.py  # Integration tests
+└── docker-compose.yml   # Container setup
+```
+
+## VS Code Tasks - Development Workflow
+
+**🎯 PRIMARY DEVELOPMENT METHOD: Use VS Code Tasks for ALL common operations**
+
+This project uses VS Code Tasks extensively to provide a consistent, reproducible development workflow. Tasks handle complex operations like server management, testing, and dependency installation.
+
+### Why VS Code Tasks?
+
+- ✅ **Reproducible**: Tasks are version-controlled and consistent across environments
+- ✅ **Integrated**: Run tasks directly from VS Code (Ctrl+Shift+P → "Tasks: Run Task")
+- ✅ **Parallel Execution**: Tasks can run multiple operations simultaneously
+- ✅ **Error Handling**: Built-in error detection and reporting
+- ✅ **Background Processes**: Long-running tasks (servers) run in background automatically
+- ✅ **Dependency Management**: Tasks handle complex command sequences safely
+
+### Essential Tasks
+
+#### Setup Tasks (Run First)
+
+- **"Full Development Setup"** - Complete environment setup (venv + dependencies)
+- **"Create Virtual Environment"** - Create Python virtual environment
+- **"Install Backend Dependencies"** - Install Python packages
+- **"Install Frontend Dependencies"** - Install Node.js packages
+
+#### Development Tasks
+
+- **"Start Full Stack (Development)"** - Start both backend (port 8000) and frontend (port 5173)
+- **"Start Full Stack (HTTPS)"** - Start both servers with SSL (backend port 8443)
+- **"Start Backend Server (Development)"** - Start FastAPI server only
+- **"Start Frontend Dev Server"** - Start React dev server only
+
+#### Testing Tasks
+
+- **"Run All Tests"** - Execute complete test suite (backend + frontend + integration + SSL + LLM)
+- **"Run Backend Tests"** - Python unit tests
+- **"Run Frontend Tests"** - React component tests
+- **"Run Integration Tests"** - End-to-end API tests
+- **"Run SSL Tests"** - SSL certificate validation
+- **"Run LLM Integration Tests"** - AI-powered concept clustering validation
+
+#### Utility Tasks
+
+- **"Stop All Servers"** - Terminate all running development servers
+- **"Check Backend Health"** - Verify backend API is responding
+- **"Check Frontend Health"** - Verify frontend is serving correctly
+- **"Clean Build Artifacts"** - Remove cache files and build artifacts
+
+### ABSOLUTE RULE: NEVER Use Direct Terminal Commands for Complex Operations
+
+**🚫 STRICTLY FORBIDDEN: Never execute commands with pipes (|), redirection (>, >>), complex shell operations, or multi-step processes directly in the terminal.**
+
+**EXAMPLES OF COMPLETELY FORBIDDEN COMMANDS:**
+
+```bash
+# ❌ ABSOLUTELY NEVER ANY DO THESE:
+curl http://localhost:8000 | head -20
+npm run dev > /dev/null 2>&1 &
+command1 && command2 || command3
+ps aux | grep python | grep -v grep
+cat file.txt | grep "pattern" | wc -l
+```
+
+**✅ ONLY DO THIS INSTEAD:**
+
+```bash
+# ✅ Create a script file and execute it
+python nano-scripts/my_test_script.py
+```
+
+### When to Create Scripts (MANDATORY)
+
+**You MUST create a script file for ANY operation that involves:**
+- Multiple commands or steps
+- Pipes, redirection, or shell operators
+- Process management (starting/stopping servers)
+- Error handling and cleanup
+- Data processing or filtering
+- Network requests with output processing
+- Any non-trivial operation
+
+### Script Requirements (MANDATORY)
+
+**ALL scripts MUST include:**
+1. **Descriptive filename**: `test_api_endpoints.py`, `start_services.py`
+2. **Shebang line**: `#!/usr/bin/env python3`
+3. **Comprehensive docstring**: Explain purpose, usage, and behavior
+4. **Error handling**: Try/except blocks with proper cleanup
+5. **Resource cleanup**: Always terminate processes, close connections
+6. **Return codes**: `sys.exit(0)` for success, `sys.exit(1)` for failure
+7. **Absolute paths**: Use absolute paths to avoid directory issues
+
+### Terminal Command Restrictions (MANDATORY)
+
+**The ONLY terminal commands allowed are:**
+- `cd` - Change directory
+- `ls` - List files
+- Simple commands without pipes/redirection
+
+**ANYTHING ELSE must be written as a script first.**

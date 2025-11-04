@@ -4,7 +4,7 @@ import { useRef, useMemo, useState } from 'react';
 import * as THREE from 'three';
 
 // Animated floating bubble component
-function FloatingBubble({ position, size, category, count, onClick, isSelected }) {
+function FloatingBubble({ position, size, name, description, count, onClick, isSelected, isCluster }) {
   const meshRef = useRef();
   const [hovered, setHovered] = useState(false);
 
@@ -22,7 +22,7 @@ function FloatingBubble({ position, size, category, count, onClick, isSelected }
       <group
         ref={meshRef}
         position={position}
-        onClick={() => onClick(category)}
+        onClick={() => onClick(name)}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
       >
@@ -48,7 +48,7 @@ function FloatingBubble({ position, size, category, count, onClick, isSelected }
           />
         </Sphere>
 
-        {/* Category text */}
+        {/* Name text */}
         <Text
           position={[0, size + 0.3, 0]}
           fontSize={size * 0.3}
@@ -56,7 +56,7 @@ function FloatingBubble({ position, size, category, count, onClick, isSelected }
           anchorX="center"
           anchorY="middle"
         >
-          {category}
+          {name}
         </Text>
 
         {/* Question count */}
@@ -69,48 +69,95 @@ function FloatingBubble({ position, size, category, count, onClick, isSelected }
         >
           {count}
         </Text>
+
+        {/* Description for AI clusters */}
+        {isCluster && description && (
+          <Text
+            position={[0, -size - 0.6, 0]}
+            fontSize={size * 0.15}
+            color="#7f8c8d"
+            anchorX="center"
+            anchorY="middle"
+            maxWidth={size * 3}
+          >
+            {description.length > 20 ? `${description.substring(0, 17)}...` : description}
+          </Text>
+        )}
       </group>
     </Float>
   );
 }
 
-function ConceptCloud({ categories, onSelectCategory }) {
+function ConceptCloud({ categories, llmAnalysis, viewMode, onSelectCategory }) {
   const groupRef = useRef();
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  // Generate 3D positions using a more natural clustering algorithm
+  // Generate 3D positions using clustering algorithm
   const bubbleData = useMemo(() => {
-    const categoryKeys = Object.keys(categories);
-    return categoryKeys.map((category, i) => {
-      const count = categories[category];
+    if (viewMode === 'ai' && llmAnalysis?.suggested_clusters) {
+      // Use AI-discovered clusters
+      const aiClusters = llmAnalysis.suggested_clusters;
+      return aiClusters.map((cluster, i) => {
+        const questionCount = cluster.question_ids.length;
 
-      // Create clustering effect - similar categories cluster together
-      const clusterAngle = (i / categoryKeys.length) * Math.PI * 2;
-      const clusterRadius = 2 + Math.sin(i * 0.5) * 1.5;
-      const heightVariation = Math.sin(i * 0.7) * 2;
+        // Position clusters in a circle
+        const angle = (i / aiClusters.length) * Math.PI * 2;
+        const radius = 3;
+        const height = Math.sin(i * 0.5) * 1;
 
-      // Add some randomness for natural distribution
-      const randomOffset = {
-        x: (Math.random() - 0.5) * 1.5,
-        y: (Math.random() - 0.5) * 1.5,
-        z: (Math.random() - 0.5) * 1.5,
-      };
+        return {
+          id: cluster.name,
+          name: cluster.name,
+          description: cluster.description,
+          count: questionCount,
+          position: [
+            Math.cos(angle) * radius,
+            height,
+            Math.sin(angle) * radius,
+          ],
+          size: Math.max(0.4, Math.min(1.5, questionCount * 0.12 + 0.5)),
+          color: `hsl(${i * 360 / aiClusters.length}, 70%, 60%)`,
+          isCluster: true,
+          questionIds: cluster.question_ids
+        };
+      });
+    } else {
+      // Use manual categories
+      const categoryKeys = Object.keys(categories);
+      return categoryKeys.map((category, i) => {
+        const count = categories[category];
 
-      return {
-        category,
-        count,
-        position: [
-          Math.cos(clusterAngle) * clusterRadius + randomOffset.x,
-          heightVariation + randomOffset.y,
-          Math.sin(clusterAngle) * clusterRadius + randomOffset.z,
-        ],
-        size: Math.max(0.3, Math.min(1.2, count * 0.08 + 0.4)), // Size based on count
-      };
-    });
-  }, [categories]);
+        // Create clustering effect - similar categories cluster together
+        const clusterAngle = (i / categoryKeys.length) * Math.PI * 2;
+        const clusterRadius = 2 + Math.sin(i * 0.5) * 1.5;
+        const heightVariation = Math.sin(i * 0.7) * 2;
 
-  const handleBubbleClick = (category) => {
-    const newSelected = selectedCategory === category ? null : category;
+        // Add some randomness for natural distribution
+        const randomOffset = {
+          x: (Math.random() - 0.5) * 1.5,
+          y: (Math.random() - 0.5) * 1.5,
+          z: (Math.random() - 0.5) * 1.5,
+        };
+
+        return {
+          id: category,
+          name: category,
+          count,
+          position: [
+            Math.cos(clusterAngle) * clusterRadius + randomOffset.x,
+            heightVariation + randomOffset.y,
+            Math.sin(clusterAngle) * clusterRadius + randomOffset.z,
+          ],
+          size: Math.max(0.3, Math.min(1.2, count * 0.08 + 0.4)),
+          color: `hsl(${i * 360 / categoryKeys.length}, 70%, 60%)`,
+          isCluster: false
+        };
+      });
+    }
+  }, [categories, llmAnalysis, viewMode]);
+
+  const handleBubbleClick = (bubbleId) => {
+    const newSelected = selectedCategory === bubbleId ? null : bubbleId;
     setSelectedCategory(newSelected);
     onSelectCategory(newSelected);
   };
@@ -134,13 +181,15 @@ function ConceptCloud({ categories, onSelectCategory }) {
           {/* Render bubbles */}
           {bubbleData.map((bubble, i) => (
             <FloatingBubble
-              key={bubble.category}
+              key={bubble.id}
               position={bubble.position}
               size={bubble.size}
-              category={bubble.category}
+              name={bubble.name}
+              description={bubble.description}
               count={bubble.count}
               onClick={handleBubbleClick}
-              isSelected={selectedCategory === bubble.category}
+              isSelected={selectedCategory === bubble.id}
+              isCluster={bubble.isCluster}
             />
           ))}
         </group>
@@ -158,12 +207,27 @@ function ConceptCloud({ categories, onSelectCategory }) {
         color: '#333'
       }}>
         <div><strong>3D Concept Cloud</strong></div>
-        <div>Categories: {Object.keys(categories).length}</div>
-        <div>Total Questions: {Object.values(categories).reduce((a, b) => a + b, 0)}</div>
-        {selectedCategory && (
-          <div style={{ color: '#ff4757', marginTop: '5px' }}>
-            Selected: {selectedCategory} ({categories[selectedCategory]} questions)
-          </div>
+        <div>View Mode: {viewMode === 'ai' ? 'AI Clusters' : 'Manual Categories'}</div>
+        {viewMode === 'ai' && llmAnalysis?.suggested_clusters ? (
+          <>
+            <div>AI Clusters: {llmAnalysis.suggested_clusters.length}</div>
+            <div>Total Questions: {llmAnalysis.suggested_clusters.reduce((sum, cluster) => sum + cluster.question_ids.length, 0)}</div>
+            {selectedCategory && (
+              <div style={{ color: '#ff4757', marginTop: '5px' }}>
+                Selected: {selectedCategory}
+              </div>
+            )}
+          </>
+        ) : (
+          <>
+            <div>Categories: {Object.keys(categories).length}</div>
+            <div>Total Questions: {Object.values(categories).reduce((a, b) => a + b, 0)}</div>
+            {selectedCategory && (
+              <div style={{ color: '#ff4757', marginTop: '5px' }}>
+                Selected: {selectedCategory} ({categories[selectedCategory]} questions)
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
