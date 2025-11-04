@@ -1,0 +1,17 @@
+[
+  { "name": "atc", "path": "/Users/jose/src/work/atc", "description": "atc" },
+  { "name": "autolinker-python-experiments", "path": "/Users/jose/src/work/autolinker-python-experiments", "description": "autolinker experiments" },
+  { "name": "backend", "path": "/Users/jose/src/work/backend", "description": "backend (aspire?)" },
+  { "name": "BRICKS", "path": "/Users/jose/src/work/BRICKS--classified-knowleadge-system-", "description": "BRICKS" },
+  { "name": "hn1", "path": "/Users/jose/src/work/hn1", "description": "hn1" },
+  { "name": "hydracam-processors", "path": "/Users/jose/src/work/hydracam-processors", "description": "hydracam processors" },
+  { "name": "hydracamv2", "path": "/Users/jose/src/work/hydracamv2", "description": "hydracamv2" },
+  { "name": "keob-nodes", "path": "/Users/jose/src/work/keob-nodes", "description": "keob nodes" },
+  { "name": "keoblib", "path": "/Users/jose/src/work/keoblib", "description": "keoblib" },
+  { "name": "mobo", "path": "/Users/jose/src/work/mobo", "description": "mobo" },
+  { "name": "phone-backup-tool", "path": "/Users/jose/src/work/phone-backup-tool", "description": "phone backup tool" },
+  { "name": "video-sinc", "path": "/Users/jose/src/work/video-sinc", "description": "video sinc" },
+  { "name": "vista", "path": "/Users/jose/src/work/vista", "description": "vista" }
+]
+
+

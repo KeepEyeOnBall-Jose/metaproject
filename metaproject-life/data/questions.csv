@@ -1,0 +1,25 @@
+id,question,category,created_at,status,notes
+1755941445151,How do I take a lovable/bolt.new prototype and make it go online with an already booked domain?,todo,2025-08-23T11:30:45.151304Z,open,answer:answers/1755941445151.md
+1755941516559,Is Merlin Properties still using our tours (keepeyeonball.com)? How can we get them back as customers?,sales,2025-08-23T11:31:56.559930Z,open,answer:answers/1755941516559.md
+1755941516753,What are ETL/ELT workflows?,learning,2025-08-23T11:31:56.753857Z,open,answer:answers/1755941516753.md
+1755941712510,What is exactly a workspace in VSCode and Copilot? How does it differ from a mere folder or a solution in VS?,tools,2025-08-23T11:35:12.510879Z,open,answer:answers/1755941712510.md
+1755941712739,How can I let you quickly access and analyze multiple projects/workspaces from this one workspace?,workflow,2025-08-23T11:35:12.740074Z,open,answer:answers/1755941712739.md
+1755943061779,how can I tell how many references a method or a module has?,dev environment,2025-08-23T11:57:41.779446Z,open,
+1755943069687,how can I identify and remove dead code?,dev environment,2025-08-23T11:57:49.687955Z,open,
+1755943069909,How exactly does each conversation/window in Copilot Chat map into the terminals?,dev environment,2025-08-23T11:57:49.909368Z,open,
+1755943070157,I often have multiple agent windows open but I don't know which terminal/s they can use for read/write and if it makes a difference or if I can configure it,dev environment,2025-08-23T11:57:50.157509Z,open,
+1755943343477,I want to learn about Puppeteer and Playwright and how to use them to simulate human clicks for testing my websites (what drivers, browsers, headless options, anti-bot issues, and best practices). Also note: relates to Altamira project.,testing,2025-08-23T12:22:23.477000Z,open,answer:answers/1755943343477.md
+1755943489448,Clear distinctions, responsibilities and differences between Pylint, Flake8, mypy, ruff and Black.,dev environment,2025-08-23T12:24:49.448000Z,open,answer:answers/1755943489448.md
+1755943343477,"I want to learn about Puppeteer and Playwright and how to use them to simulate human clicks for testing my websites (what drivers, browsers, headless options, anti-bot issues, and best practices). Also note: relates to Altamira project.",testing,2025-08-23T12:02:23.477847Z,open,project=Altamira
+1755943489448,"Clear distinctions, responsibilities and differences between Pylint, Flake8, mypy, ruff and Black.",dev environment,2025-08-23T12:04:49.449112Z,open,linters
+1755943570173,Print large-format data-structure templates for autolinker v2 (classifier vs genome vs tour) to post on walls,design,2025-08-23T12:32:50.173000Z,open,answer:answers/1755943570173.md
+1755943570173,Print large-format data-structure templates for autolinker v2 (classifier vs genome vs tour) to post on walls,design,2025-08-23T12:06:10.173337Z,open,format=printable
+1755943711669,What is a reverse proxy and how is it deployed exactly in the aspire project?,dev environment,2025-08-23T12:08:31.670111Z,open,answer:answers/1755943711669.md
+1755943723401,What is APR exactly?,dev environment,2025-08-23T12:08:43.402076Z,open,answer:answers/1755943723401.md
+1755943733488,How do I lock all the requisites in the repo or for a repo?,dev environment,2025-08-23T12:08:53.488457Z,open,answer:answers/1755943733488.md
+1755943743462,"What is perplexity as an index for training, and what is Perplexity the product/company?",ml,2025-08-23T12:09:03.462934Z,open,answer:answers/1755943743462.md
+1755943980841,How is deployment of the backend and motherboard services done exactly?,dev environment,2025-08-23T12:40:45.841000Z,open,answer:answers/1755943980841.md
+1755943980841,How is deployment of the backend and motherboard services done exactly?,dev environment,2025-08-23T12:13:00.841992Z,open,deploy
+1756184934984,Make my laptop part of site compute (onboarding & infra),technical,2025-08-26T07:08:54.985044Z,open,note:notes/laptop_become_site_compute.md
+1756185070973,Aim for zero linting & formatting issues across all projects (M40),technical,2025-08-26T07:11:10.973283Z,open,note:notes/aim_zero_lint.md
+1756200845266,Autolinker: handle scene yaw correction != 0 (virtual north) — major impact,autolinker,2025-08-26T11:34:05.266302Z,open,note:notes/autolinker_scene_yaw_correction.md

@@ -1,0 +1,23 @@
+{
+  "folders": [
+    { "path": "." },
+    { "path": "/Users/jose/src/work/atc" },
+    { "path": "/Users/jose/src/work/autolinker-python-experiments" },
+    { "path": "/Users/jose/src/work/backend" },
+    { "path": "/Users/jose/src/work/BRICKS--classified-knowleadge-system-" },
+    { "path": "/Users/jose/src/work/hn1" },
+    { "path": "/Users/jose/src/work/hydracam-processors" },
+    { "path": "/Users/jose/src/work/hydracamv2" },
+    { "path": "/Users/jose/src/work/keob-nodes" },
+    { "path": "/Users/jose/src/work/keoblib" },
+    { "path": "/Users/jose/src/work/mobo" },
+    { "path": "/Users/jose/src/work/phone-backup-tool" },
+    { "path": "/Users/jose/src/work/video-sinc" },
+    { "path": "/Users/jose/src/work/vista" }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/.git": true
+    }
+  }
+}
