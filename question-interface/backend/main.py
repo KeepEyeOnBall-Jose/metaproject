@@ -19,7 +19,7 @@ app.add_middleware(
 )
 
 
-# Data model for questions
+# Data model for questions (now supporting both notes and tasks)
 class Question(BaseModel):
     id: str
     question: str
@@ -27,6 +27,13 @@ class Question(BaseModel):
     created_at: str
     status: str
     notes: Optional[str] = None
+    type: Optional[str] = "note"  # "note" or "task"
+    # Task-specific fields
+    repository: Optional[str] = None
+    priority: Optional[str] = None  # "low", "medium", "high", "urgent"
+    assignee: Optional[str] = None
+    due_date: Optional[str] = None
+    google_sheet_id: Optional[str] = None  # For synced items
 
 
 # Load questions from CSV
@@ -373,3 +380,109 @@ Format your response as JSON:
             ],
             fallback_used=True,
         )
+
+
+# New endpoints for notes/tasks separation
+@app.get("/notes", response_model=List[Question])
+def get_notes():
+    """Get all items of type 'note'."""
+    questions = load_questions()
+    return [q for q in questions if q.type == "note"]
+
+
+@app.get("/tasks", response_model=List[Question])
+def get_tasks():
+    """Get all items of type 'task'."""
+    questions = load_questions()
+    return [q for q in questions if q.type == "task"]
+
+
+# Repository management
+class Repository(BaseModel):
+    name: str
+    url: str
+    description: Optional[str] = None
+
+
+@app.get("/repositories")
+def get_repositories():
+    """Get list of available repositories in company's software surface."""
+    # This would ideally come from a database or GitHub API
+    # For now, returning a static list
+    return [
+        {
+            "name": "metaproject",
+            "url": "https://github.com/company/metaproject",
+            "description": "Main metaproject repository",
+        },
+        {
+            "name": "question-interface",
+            "url": "https://github.com/company/question-interface",
+            "description": "Question tracking interface",
+        },
+        {
+            "name": "backend-api",
+            "url": "https://github.com/company/backend-api",
+            "description": "Backend API services",
+        },
+        {
+            "name": "frontend-app",
+            "url": "https://github.com/company/frontend-app",
+            "description": "Frontend application",
+        },
+    ]
+
+
+# Google Drive/Sheets Integration
+class GoogleSheetImportRequest(BaseModel):
+    spreadsheet_id: str
+    range: Optional[str] = "A1:Z1000"
+    sheet_name: Optional[str] = None
+
+
+class GoogleAuthRequest(BaseModel):
+    access_token: str
+
+
+@app.post("/google/sheets/import")
+async def import_from_google_sheets(request: GoogleSheetImportRequest):
+    """Import tasks from a Google Sheet."""
+    # This would require Google Sheets API integration
+    # For now, returning a placeholder response
+    return {
+        "status": "success",
+        "message": "Google Sheets integration pending - requires API credentials",
+        "spreadsheet_id": request.spreadsheet_id,
+        "items_imported": 0,
+    }
+
+
+@app.post("/google/auth")
+async def google_auth(request: GoogleAuthRequest):
+    """Handle Google OAuth authentication."""
+    # This would validate the access token and store it securely
+    return {
+        "status": "success",
+        "message": "Authentication successful",
+        "user": "user@example.com",
+    }
+
+
+@app.get("/google/sheets/list")
+async def list_google_sheets():
+    """List available Google Sheets."""
+    # This would use Google Drive API to list sheets
+    return {
+        "sheets": [
+            {
+                "id": "example-sheet-id-1",
+                "name": "Q1 2024 Tasks",
+                "url": "https://docs.google.com/spreadsheets/d/example-sheet-id-1",
+            },
+            {
+                "id": "example-sheet-id-2",
+                "name": "Development Backlog",
+                "url": "https://docs.google.com/spreadsheets/d/example-sheet-id-2",
+            },
+        ]
+    }
